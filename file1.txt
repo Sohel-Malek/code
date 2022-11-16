@@ -1,3 +1,97 @@
 JuST a text
 
 https://drive.google.com/drive/folders/1gMtdr8wNHRt8cjMtFwvSltcGeKWjFfkj
+
+/////////////////////////////////////////////////////////////////
+Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class GridViewCategory
+    Inherits System.Web.UI.Page
+
+    Dim cn As New SqlConnection("Data Source=.\SQLEXPRESS;AttachDbFilename=E:\ASP Pract\WebEComAll\App_Data\Ecomm_All_Category.mdf;Integrated Security=True;User Instance=True")
+    Dim cmd As New SqlCommand
+    Dim qry As String
+    Dim dr As SqlDataReader
+    Dim da As New SqlDataAdapter
+    Dim ds As New DataSet
+    Dim catId As String
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        cn.Open()
+        If Not Page.IsPostBack Then
+            fillGrid()
+        End If
+        btnUpdateGrid.Visible = False
+    End Sub
+
+    Sub fillGrid()
+        qry = "select * from category_tbl"
+        da = New SqlDataAdapter(qry, cn)
+        ds = New DataSet
+        da.Fill(ds)
+        gridCat.DataSource = ds
+        gridCat.DataBind()
+    End Sub
+
+    Protected Sub gridCat_RowDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewDeleteEventArgs) Handles gridCat.RowDeleting
+        Dim qryDel As String
+        qryDel = "delete from category_tbl where cid=" & e.Keys(0)
+        'qryDel = "delete c.category_tbl,p.product_tblfrom category_tbl c,product_tbl p where c.cid=p.cid having cid='" & e.Keys(0) & "' group by cid"
+        cmd = New SqlCommand(qryDel, cn)
+        cmd.ExecuteNonQuery()
+        fillGrid()
+    End Sub
+
+    Protected Sub gridCat_RowEditing(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewEditEventArgs) Handles gridCat.RowEditing
+        hdnEdit.Value = gridCat.Rows(e.NewEditIndex).Cells(1).Text
+        txtCatGrid.Text = gridCat.Rows(e.NewEditIndex).Cells(2).Text
+        txtCatDescGrid.Text = gridCat.Rows(e.NewEditIndex).Cells(3).Text
+        Dim h As New HiddenField
+        h = gridCat.Rows(e.NewEditIndex).FindControl("hdnImg")
+        Image1Grid.ImageUrl = "~/img/category/" & h.Value
+        btnUpdateGrid.Visible = True
+    End Sub
+
+    Protected Sub btnUpdateGrid_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdateGrid.Click
+        Dim fname As String
+        If fileUploadCatGrid.HasFile Then
+            If fileUploadCatGrid.PostedFile.ContentType = "image/jpeg" Then
+                If fileUploadCatGrid.PostedFile.ContentLength < 50000 Then
+                    fname = fileUploadCatGrid.FileName
+                    fileUploadCatGrid.SaveAs(Server.MapPath("~/img/category/" & fname))
+                    Image1Grid.ImageUrl = "~/img/category/" & fname
+                    lblFileUploadGrid.Text = "File Uploaded Sucessfully"
+
+
+                    qry = "update category_tbl set cname= '" & txtCatGrid.Text & "',cdesc= '" & txtCatDescGrid.Text & "',imgnm= '" & fileUploadCatGrid.FileName & "' where cid= '" & hdnEdit.Value & "' "
+                    cmd = New SqlCommand(qry, cn)
+                    cmd.ExecuteNonQuery()
+                    gridCat.EditIndex = -1
+                    lblMsgGrid.Text = "Updated.."
+                    fillGrid()
+                    clearField()
+
+                Else
+                    Image1Grid.ImageUrl = Nothing
+                    lblFileUploadGrid.Text = "File is too Large"
+                    gridCat.EditIndex = -1
+                End If
+            Else
+                lblFileUploadGrid.Text = "Please select Image file"
+                gridCat.EditIndex = -1
+            End If
+        Else
+            lblFileUploadGrid.Text = "Please Select the File..!"
+            gridCat.EditIndex = -1
+        End If
+
+    End Sub
+
+    Sub clearField()
+        txtCatGrid.Text = " "
+        txtCatDescGrid.Text = " "
+        'Image1Grid.ImageUrl = " "
+    End Sub
+
+End Class
