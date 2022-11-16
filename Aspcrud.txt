@@ -1,0 +1,70 @@
+Imports System.Data.SqlClient
+Imports System.Data
+
+Partial Class _Default
+    Inherits System.Web.UI.Page
+    Dim cn As New SqlConnection("Data Source=.\SQLEXPRESS;AttachDbFilename=D:\4_BCA 2020-2023\BCA sem5\CRUD_Website\App_Data\Products.mdf;Integrated Security=True;User Instance=True")
+    Dim cmd As New SqlCommand
+    Dim qry As String
+
+    Dim dap As New SqlDataAdapter
+    Dim dr As SqlDataReader
+    Dim ds As New Dataset
+    'Dim dt As New DataTable
+
+    Sub filled()
+        cn.Open()
+        ds.Clear()
+        qry = "Select * from product_table"
+        'cmd = New SqlCommand(qry, cn)
+        dap = New SqlDataAdapter(qry, cn)
+        dap.Fill(ds)
+        GridView1.DataSource = ds
+        GridView1.DataBind()
+        cn.Close()
+    End Sub
+
+
+    Protected Sub btnInsert_Click(sender As Object, e As System.EventArgs) Handles btnInsert.Click
+        cn.Open()
+        qry = "Insert into product_table values(" & txtId.Text & ",'" & txtId0.Text & "','" & DropDownList1.SelectedValue & "')"
+        cmd = New SqlCommand(qry, cn)
+        cmd.ExecuteNonQuery()
+        cn.Close()
+        filled()
+        MsgBox("Data inserted...", MsgBoxStyle.Information, "Message")
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        filled()
+    End Sub
+
+    Protected Sub btnUpd_Click(sender As Object, e As System.EventArgs) Handles btnUpd.Click
+        cn.Open()
+        qry = "Update product_table set Name='" & txtId0.Text & "',Unit='" & DropDownList1.SelectedValue & "' where Id=" & txtId.Text & " "
+        cmd = New SqlCommand(qry, cn)
+        cmd.ExecuteNonQuery()
+        cn.Close()
+        filled()
+    End Sub
+
+    Protected Sub btnDel_Click(sender As Object, e As System.EventArgs) Handles btnDel.Click
+        cn.Open()
+        qry = "Delete from product_table where Id='" & txtId.Text & "' "
+        cmd = New SqlCommand(qry, cn)
+        cmd.ExecuteNonQuery()
+        cn.Close()
+        filled()
+    End Sub
+
+    Protected Sub btnSrch_Click(sender As Object, e As System.EventArgs) Handles btnSrch.Click
+        cn.Open()
+        ds.Clear()
+        qry = "Select * from product_table where Id=" & txtId.Text & " "
+        dap = New SqlDataAdapter(qry, cn)
+        dap.Fill(ds)
+        GridView1.DataSource = ds
+        GridView1.DataBind()
+        cn.Close()
+    End Sub
+End Class
