@@ -1,0 +1,205 @@
+1. 	Count the number of files in working directory
+	 
+	ls -l | grep -v ^d | wc -l
+	 
+2.  Count number of words in 1st line of file f1.
+
+	cat f1 | head -1 | wc -w
+	
+3.	Count length of last line of file f1.
+
+	tail -1 f1 | wc -c
+	
+4.  Count number of users logged into Unix system (Active users).
+	
+	who | wc -l
+	
+5.	Display list of last modified files of current directory.
+
+	ls -lt | grep -v ^d
+	
+6. Count the number of files of working directory that begins with alphabets.
+
+	ls -l | grep ^d | tr -s " " | cut -d " " -f9 | grep ^[A-Za-z] | wc -l
+
+7.	Display 5th to 7th line of file f1.
+
+	head -7 f1 | tail -2 
+
+8. 	Display last 6 lines of file f1.
+	
+	tail -6 f1
+
+9. 	Display 1st character of 5th line of file f1.
+
+	head -5 f1 | tail -1 | cut -c1
+
+10. Display last 10 characters of last line of file f1.
+
+	tail -1 f1 | tail -c 10
+	
+11. Display last 10 characters of first line of file f1.
+
+	head -1 f1 | tail -c 10
+	
+12. Display all line of file f1 without using cat command.	
+	
+	nl f1
+	tail +1 f1
+	
+13. Display first 3 lines using of file f1 without using head or tail command.
+
+	sed -n '1,3p' f1
+	
+14. Count number of duplicate lines in file f1.
+
+	sort f1 | uniq -d 
+
+15.	Display name of largest file present in current directory.
+
+	ls -lS | grep -v ^d | head -2 | tail -1
+
+16. Display 1st 5 largest file of current directory.
+
+	ls -lS | grep -v ^d | head -6 | tail -1
+	
+17.	Count number of blank lines present in file.	
+	
+	grep '^ $' f1 | wc -l
+	
+18.	Count number of vowels in file f1.
+
+	grep -io [aeiou] f1 | wc -l
+	
+19. Remove all special characters from file f1.
+	
+	cat f2 | tr -d '[$@*()%&/]'
+
+	sed 's/[()!@#$%^/*]//g' f2
+	
+20.	Display all the words of file f1 in which 1st 2 characters are different.
+
+	sed 's/ /\n/g' | awk -F " " '{if($1!=$2)print $0}'
+	
+21.	Display only repeated words of file f1.
+
+	sed 's/ /\n/g' f2 | sort | uniq -d
+	
+22. Count number of different characters in f1 and f2.
+
+	
+23.
+
+
+
+
+
+GREP COMMANDS
+
+
+
+
+2.	Display all lines of f1 that begins and ends with a dot (.) and contains anything between them.
+
+	egrep '^[.].*[.]$' f2
+	
+3. 	Display all lines of f1 that contains 2 or more ‘^’ symbol at beginning of line.
+
+	egrep '^\^{2,}' f2
+	
+4.	Display all lines of f1 that contains ‘*’ symbol in a line.
+
+	egrep '\*' f2
+
+5.	Display all lines of f1 that contains pattern ‘a*’ in a line.
+
+	egrep 'a\*' f2
+
+6.	Display all lines of f1 that contains exact 5 characters
+
+	egrep '^.{0,5}$' f1
+
+7.	Display all lines of f1 that contains two consecutive ‘hello’ patterns in a line
+
+	egrep "(unix){2}" f2
+	
+	
+8.	Display all lines of f1 that contains either ‘Hardware’, or ‘ Software’ or ‘Firmware’.
+	
+	egrep "(hard|firm|soft)ware" f1
+
+9.	Display all lines of f1 that starts with ‘The’ and ends with ‘.’
+	
+	egrep -i "^THE.+\.$" f2
+	
+10.	Display all words of f1 that starts and ends with same characters
+
+	awk 'substr($0,1,1)==substr($0,length,1)' f1
+	
+11. Display those words of f1 in which any character is repeated consecutively atleast 2-times.
+
+	egrep -o '\w*(\w)\1\w*' f2
+	
+12.	Count frequency of ‘unix’ pattern in f1
+	
+	egrep -c 'unix' f1
+	
+13.	Display list of empty files present in working directory,
+
+	ls -s | grep ^0
+
+14.	Display list of files of working directory whose name consist of atmost 3 characters.
+
+	ls | egrep "^.{0,3}$"
+	
+15.	Display all lines of f1 that does not begin with alphabets or numbers.
+
+	egrep -v [A-Za-z0-9] f2
+	
+	
+SED COMMANDS
+
+
+1.	Write the sed command to append the blank line after each line of the file f1 except last line.
+
+	sed '$!G' f2
+	
+	G means Appned the blank line after each line
+	
+	
+	
+2.
+
+	ls -l | sed -n '/....rw/p'
+	
+	
+3.
+	who | sed -n '$='
+
+
+4
+
+	sed 's/[0-9]/ /g' f1
+
+
+5
+	 sed 's/unix/linux/g' f1
+
+
+6
+	sed '5,$s/unix/linux/g' f3
+	
+7
+	sed -n '/^[0-9A-Za-z]/p' f1
+
+8
+	sed '/^ $/d' f1
+	
+9
+	sed 's/[a-zA-Z]//g' f1
+	
+10
+
+	sed -n '/^a.*h$/p' f1
+
+	

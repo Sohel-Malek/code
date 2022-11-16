@@ -1,0 +1,822 @@
+1) Practical_4
+
+	1. WAC To line no and as well as salary greater than 10000
+
+		awk '$4 > 20000 {print NR,$2}' emp
+
+	2. star with a and end with $
+
+		grep "^[aA].*\$$" f1
+		grep "^[aA].*[$]$" f1
+
+
+	3. display 1 st word of 10 20 line
+
+		awk 'NR==10,NR==20{print $1}' emp
+
+	4. if space greater than 1 then remove them
+
+		cat f2 | tr -s " "
+		
+		cat testfile | sed 's/[ ]\+/ /g'
+		cat testfile | sed 's/[ ]\+/ /g' | tr " " "*" | tr "\t" "&"
+
+
+	5. display all line that occur more than once
+
+		sort f2 | uniq -d  (c for count)
+
+
+	6. count total number of words and line from given file[Without use wc command]
+	
+		echo "file name : " 
+		read fl
+
+		c=0
+
+		for i in `cat $fl`
+		do
+			c=`expr $c + 1`
+
+		done
+
+		line=0
+		line=`grep -e '$' -c $fl`
+		echo "Total Words : $c"
+		echo "Total Line :  $line"
+
+		
+	OR
+
+		BEGIN {
+			cl=0
+			cw=0
+			cc=0
+		}
+		{
+			cl++
+			cw=cw+NF
+			cc=cc+length($0)
+		}
+		END {
+			print "Total Lines = ",cl
+			print "Total Words = ",cw
+			print "Total Chars = ",cc
+		}
+
+
+
+2) Practical_1
+
+	1. Write a shell script to accept the string from user  and convert all the odd number chracter into upper case
+
+		echo "Enter the String : "
+		read s
+
+		l=`expr length $s`
+		i=1
+
+		while [ $i -le $l ]
+		do 
+			k=`echo $s | cut -c $i`
+			if [ `expr $i % 2` -eq 1 ]
+			then
+				echo -n $k | tr "a-z" "A-Z"
+			elsea
+				echo -n $k
+			fi
+			i=`expr $i + 1`
+		done
+		echo 
+
+	2. Write an awk script to display all the words in reverse order of the given file
+	
+	
+		{
+			for(i=NF;i>=1;i--)
+			{
+				printf "%s ",$i	
+			}
+			print " "
+		}
+		
+3)Practical_2
+
+	1. Write a Shell script display content the regular file of current direcotory
+	
+		echo "Ente the File Name : "
+		read fl
+
+		if [ -e $fl ]
+		then
+			if [ -f $fl ] 
+			then
+				echo "File"
+				value=`cat $fl`  
+				echo "The file content"
+				echo $value
+			elif [ -d $fl ]
+			then 
+				echo "Directory"
+			fi
+
+		else
+			echo "File Not Exist"
+		fi
+
+
+	2. list of file name consisting that only number
+	
+		ls | egrep "^[0-9]+$" 
+
+	3. Display lines from file that having the string "computer" at least thrice
+	
+		sed -n 's/unix/unix/3 p' f1
+		
+	4. Remove all alphabet from the file
+	
+		cat f1 | tr -d "a-zA-Z$.\`\'"
+		
+	5. display all the line that having 10 charactes long and end with $
+	
+		egrep "^.{9}[$]$" f2
+
+	6. Display all the lines that have five words in it
+	
+		awk "NF==5" f1
+		
+		
+
+	
+	
+4) Practical_3
+
+	1. 	Write a shell script to check whether two files are same or not. 
+		If the files are same the second file should be deleted from the directory.
+		(File names should be passed as command line arguments and perform proper validations.)
+		
+		f1=$1
+		f2=$2
+		flag=0
+		flag1=0
+
+		if [ -e $f1 ] && [ -e $f2 ]
+		then
+			if [ -f $f1 ]
+			then 
+				echo "File 1"
+				flag=1
+			#else
+			#	echo "Not file 1"
+			fi
+			
+			if [ -f $f2 ]
+			then
+				echo "File 2"
+				flag1=1
+			#else
+			#	echo "Not File 2"
+			fi
+			
+			if [ $flag -eq 1 ] && [ $flag1 -eq 1 ] 
+			then
+				if cmp $f1 $f2 -s
+				then
+					echo "File Matched"
+				else
+					echo "File Not Matched"
+				fi
+			else
+				echo "File Not Exist"
+			fi
+			
+		else
+			echo "File Not Exist"
+		fi
+		
+		
+		
+		
+	OR
+		
+		
+		
+		
+		k=`cmp $1 $2`
+		
+		if [ $k -eq 0 ]
+		then
+			echo "Identical"
+			rm -i $2
+		else
+			echo "Not Identical"
+		fi
+		
+		
+	2. Display all the line that contain only special charactes
+	
+		egrep -v "[a-zA-Z0-9]" f2
+
+		
+		
+	3. Display all the occurence of "Good Morning" with "Good Evening"
+		
+		sed 's/Good Morning/Good Evening/g' f1
+		sed 's/\(good\) Morning/\1 Evening/g' f1
+		sed 's/unix/linx/g' f1
+		
+	4. display name of all file and direcotory of current direcotory along with its permission and file type
+		
+		ls -l | tr -s " " | cut -d " " -f1,9
+
+		
+	5. Display all blank file with line number of the given file
+	
+		grep -vn [0-9a-zA-Z] f1
+		
+	6. display all the line that have  even number of field
+	
+		awk '{for(i=2;i<NF;i+=2) {printf "%s ",$i} print " "}' emp
+
+	
+		
+	
+5) 506 Practical_2
+
+		1. Write a shell script to display the calendar for current month with current date 
+		replaced by or* depending on whether the date has one digit or two.
+		
+		dt=`date +%d`
+		#ch="**"
+		cu=`echo $dt | cut -c1`
+		echo $cu
+
+		if [ $cu -eq 0 ]
+		then
+			dt=`echo $dt | cut -c2`
+			x="*"
+		else
+			x="**"	
+		fi
+
+		dt1=`date +%d`	
+		cal | sed "s/'$dt1'/'**'/g"
+
+		
+		
+		2. Write a shell script to check whether the number is palindrome or not
+		
+		echo "Enter the Number : "
+		read n
+		n1=$n
+		add=0
+
+		while [ $n -gt 0 ] 
+		do
+			rem=`expr $n % 10`
+			add=`expr $add \* 10 + $rem`
+			n=`expr $n \/ 10`
+		done
+
+		if [ $n1 -eq $add ]
+		then
+			echo "Number is Palindrome"
+		else
+			echo "Number not Palidrome"
+		fi
+	
+
+
+6) practical 3
+
+	1. Write a menu driven script to convert the content 
+	of file into upper case or lower case based on the user choice
+	
+		echo "Enter File Name : "
+		read s
+
+		echo "1. Uppercase"
+		echo "2. Lowercase"
+
+		echo
+		echo -n "Enter the Choice :"
+		read ch
+
+		case $ch in
+			1)
+				cat $s | tr "a-z" "A-Z"
+				;;
+			2)
+				cat $s | tr "A-Z" "a-z"
+				;;
+			*)
+				echo "Invalid Input"
+		esac
+		
+	
+		
+		
+		
+	OR
+		echo "Enter the String : "
+		read s
+		echo 
+		echo "1. Uppercase"
+		echo "2. Lowercase"
+
+		echo
+		echo -n "Enter the Choice :"
+		read ch
+
+		case $ch in
+			1)
+				echo $s | tr "a-z" "A-Z"
+				;;
+			2)
+				echo $s | tr "A-Z" "a-z"
+				;;
+			*)
+				echo "Invalid Input"
+		esac
+		
+		
+	
+	
+
+	2. To Count number of occurence of pattern 'bca' in file f1
+	
+		
+		grep -o '[Uu][Nn][Ii][Xx]' f1 | wc -l
+		
+	OR
+		
+		BEGIN {
+			c=1
+		}
+		{
+			for(i=0;i<=NF;i++)
+			{
+				if($i == "unix")
+				{
+					c++
+				}
+				
+			}
+		}
+		END {
+			printf "Total Occur : %d\n",c
+		}
+
+
+		
+		
+	3. To print words whose length is greater than 4 characters and consist of digit only
+		
+		awk '/^[0-9][0-9][0-9][0-9]+$/' f2
+		egrep "^[0-9]{4,}$" f1
+		
+	4. To print Even number of word in each line
+	
+		awk '{for(i=2;i<NF;i+=2) 
+				{
+					printf "%s ",$i
+				}
+				print " "
+			}' emp
+
+
+7) 506 Practical_1
+
+	1. Write a script to reverse the string. The String 
+	should be passed as an arguments
+	
+		echo "The original String : $1"
+		str=$1
+
+		l=`expr length $1`
+
+		rstr=" "
+
+		while [ $l -gt 0 ]
+		do
+			rstr=$rstr`echo $str | cut -c $l`
+			l=`expr $l - 1`
+		done
+
+		echo "Reverse String : $rstr"
+		
+	OR
+		
+		echo "Enter the String : "
+		read s
+
+		r=`echo $s | rev`
+		echo "Reverse String : $r"
+
+
+	2. Using AWK find out the sums of each of n columns of an array of numbers given in tabular form.
+	It should also display the grand totals. (n is to be taken command line argument)
+	
+	note:[1. store in particular file
+		  2. Run the program type this things into terminal
+				awk -f filename]
+
+	21 19 24
+
+	19 15 37
+
+	20 17 11
+	
+	
+		BEGIN {
+		print "Enter the N : "
+		
+		getline n < "/dev/tty"
+		
+		printf "Enter the %d Numbers\n",n
+		
+		for(i=1;i<=n;i++)
+		{
+			for(j=1;j<=n;j++)
+			{
+				printf "Enter Number  "
+				getline a[i,j] < "/dev/tty"
+			}
+			
+		}
+		
+		print "The Matrix"
+		
+		for(i=1;i<=n;i++)
+		{
+			for(j=1;j<=n;j++)
+			{
+				printf "%5d",a[i,j]
+			}
+			print " "
+				
+		}
+		
+		c=0
+		r=0
+		
+		for(i=1;i<=n;i++)
+		{
+			for(j=1;j<=n;j++)
+			{
+				r=r+a[i,j]
+			}
+			printf "The %d Row Sum : %d\n",i,r
+			r=0
+			
+		}
+		
+		for(i=1;i<=n;i++)
+		{
+			for(j=1;j<=n;j++)
+			{
+				c=c+a[j,i]
+			}
+			printf "The %d Column Sum : %d\n",i,c
+			c=0
+			
+		}
+
+	}
+
+
+
+
+8) 506-Practical_2
+
+	1. Write a script which nos of the vowels in the entered string
+	
+		echo "Enter the String : "
+		read s
+
+		l=`expr length "$s"`
+		c=0
+
+		while [ $l -gt 0 ]
+		do
+			chr=`echo $s | cut -c $l`
+			
+			case $chr in
+				[aeiouAEIOU])
+					c=`expr $c + 1`
+				;;
+				
+			esac
+			l=`expr $l - 1`
+		done
+
+		echo "$c"
+		
+	2. Create a student-data file which contain rollno and marks of five tests.
+	Write an awk script to calculate total and average marks for each student.
+	
+		BEGIN {
+			printf "%15s %10s %10s %10s %10s %10s %10s %10s\n\n","name","m1","m2","m3","m4","m5","total","Average"
+			}
+
+		{
+			printf "%15s %10d %10d %10d %10d %10d %10d %10.2f\n",$1,$2,$3,$4,$5,$6,($2+$3+$4+$5+$6),($2+$3+$4+$5+$6)/5
+		}
+
+9) 506 Practical_3
+
+	1.  Display lines that have a 5 letter string that starts with 'T' and ends with 'e'
+	
+		egrep -w '^[Tt].{3}[Ee]$' f2
+
+	2. Display lines that have numbers only
+		
+		egrep '^[0-9]+$' f2
+
+	3. Display lines that start with character a
+	
+		grep -e '^a' f1
+
+	4. Print the Squares of first numbers from 1 to 5.
+	
+		awk 'BEGIN {for(i=1;i<=5;i++) {print i,i*i} }'
+	
+	OR
+		
+		BEGIN {
+			for(i=1;i<=5;i++)
+			{
+				printf "%d Square is :  %d\n",i,i*i
+
+				#Sqaure ROOT
+				#printf "%d Square is :  %d\n",i*i,sqrt(i*i)
+			}
+		}
+		
+	5. Print 1 to 10 NOS
+	
+		BEGIN {
+		for(i=1;i<=10;i++)
+		{
+			printf "%d\n"i
+
+		}
+	
+	6. Collect each line in a separeate array element,
+	index it by line number and print them in reverse order
+	
+		{
+			for(i=NF;i>=1;i--)
+			{
+				printf "%s ",$i	
+			}
+			print " "
+		}
+
+	
+10) 506 Practical_2
+
+	1. Write a shell script to check whether your current 
+	working directory is same as homw directory or not
+	
+	
+		cd=`pwd`
+		echo $cd
+
+		hd=`echo $HOME`
+		echo $hd
+
+		if [ $cd = $hd ]
+		then
+			echo "Same"
+		else
+			echo "Not Same"
+		fi
+
+	
+	2. Write a script to check whether a given string is 
+	palindrome or not
+	
+		echo "Enter String : "
+		read s
+
+		org=$s
+		l=`expr length $s`
+
+		rstr=" "
+
+		while [ $l -gt 0 ]
+		do
+			rstr=$rstr`echo $s | cut -c $l`
+			l=`expr $l - 1`
+		done
+
+		echo "Original : "$org
+		echo "Reverse String : $rstr"
+
+		if [ $org = $rstr ]
+		then
+			echo "Palindrome"
+		else
+			echo "Not Palindrome"
+		fi
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+
+
+display line no with out using wc and remove spaces
+
+	grep '\s' f1 | grep -e '$' -c
+	
+	
+view all spaces
+
+	cat filename | tr " " "*" | tr "\t" "&"
+	
+Replace Multiple Whitespaces with Single Whitespace
+
+	cat testfile | sed 's/[ ]\+/ /g'
+	cat testfile | sed 's/[ ]\+/ /g' | tr " " "*" | tr "\t" "&"
+
+Remove space
+	
+	grep . file.txt
+	grep "\S" file.txt
+	sed -i '/^$/d' file.txt
+	cat filename | sed -r 's/\s+//g' (including space between two words)
+	cat testfile | sed -r 's/\s+//g' | tr " " "*" | tr "\t" "&"
+	
+To remove all whitespaces but only from a specific line (let’s say line number 2), you can use the following command:
+	
+	cat testfile | sed -r '2s/\s+//g'
+	
+Remove All Leading Whitespaces (Including Spaces and Tabs)
+
+	cat testfile | sed 's/^[ \t]*//'
+	
+Remove All Trailing Whitespaces (Including Spaces and Tabs)
+
+	cat testfile | sed 's/[ \t]*$//'
+	
+Remove both Leading and Trailing Whitespaces
+	
+	cat testfile | sed 's/^[ \t]*//;s/[ \t]*$//'
+	
+Count total number of line
+
+	wc -l filename
+	wc -l < filename
+	wc --lines filename1 filename2 filename3
+	cat filename | wc -l
+	awk 'END{print NR}' filename
+	sed -n '$=' filename
+	grep -e "$" -c filename
+	grep -e "^" -c filename
+	nl filename
+	nl filename | tail -n2
+	cat -n filename | tail -n1
+	
+
+sqaure
+
+	awk 'BEGIN {for(i=1;i<=5;i++) {print i,i*i} }'
+
+
+Square root
+
+	awk 'BEGIN {for(i=1;i<=5;i++) {print i,sqrt(i)} }'
+
+Print the employee total salary
+
+	BEGIN {
+	ts = 0} 
+	{
+		ts=ts+$4
+	} 
+	END { 
+	print "Total Salary = ",ts
+	}
+	
+count the number of file in current direcotory
+
+ls -l | wc -l
+
+
+count the total vertically awk script
+
+	BEGIN {
+		FS=","
+		OFS=" "
+		c=0
+	}
+	{
+			#printf "%d %d = %d",$3,$4,$3+$4
+			printf "%d\n",$3
+			c+=$3
+	}
+	END {
+		printf "Total is : %d\n",c
+	}
+	
+	
+	
+	BEGIN {
+		FS=","
+		OFS=" "
+		c=0
+	}
+	{
+			#printf "%d %d = %d",$3,$4,$3+$4
+			if(NR>1)
+			{
+				printf "%d\n",$3
+				c+=$3
+			}
+	}
+	END {
+		printf "Total is : %d\n",c
+	}
+	
+	
+sort the file using awk scrip
+
+	BEGIN {
+	OFS=FS=","
+	} 
+	{
+		if(NR>1)
+		{
+			print | "sort -t, -nk4 "
+		}
+		
+	} 
+	
+AWK SCRIPT Practical_2
+
+	BEGIN {
+	print "Merit List of Student";
+	print "Roll_No|Name|Total";
+	FS="|";
+	OFS="AA";
+	} 
+	{
+		if(NR>1)
+		{
+			print | "sort -t'|' -nrk3 "
+		}
+		
+	} 
+	END {
+		#OFS="AA"
+	}
+	
+
+
+a c d b
+a b c d
+
+
+ass sed 11
+
+	sed -n '/^a.*n/p' d5
+	egrep "^a*.*n$" d5
+	
+check File Type
+
+	echo "Enter the Filename : "
+	read fn
+
+	ans=`file -b $fn`
+	echo "$ans"
+
+
+Longest word from each line
+
+	{
+		longest=""; 
+		for(i=1;i<=NF;i++)
+		{
+			if(length($i)>length(longest))
+			{
+				longest=$i;
+			}
+		}
+		print longest;
+	}
+	
+Write the awk command to display lines in which 5th word is 'unix'
+
+	{
+		if($5=="unix") 
+		{	
+			print $0
+		}
+	}
+
+
+

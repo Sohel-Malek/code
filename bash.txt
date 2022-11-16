@@ -1,0 +1,252 @@
+#PRACT 1
+#1]shell script to accept string and convert all odd chr into uppercase
+echo -n "Enter String : "
+read str
+
+sl=${#str}
+#sl=`expr length $str`
+
+i=1
+while [ $i -le $sl ]
+do
+	r=`echo $str | cut -c $i`
+
+    if [ `expr $i % 2` -eq 1 ]
+    then echo -n $r | tr 'a-z' "A-Z"
+    else echo -n $r | tr 'A-Z' 'a-z'
+    fi
+	i=`expr $i + 1`
+done
+echo "" 
+
+#2]AWK SCRIPT : all words in reverse order
+{
+    for(i=NF;i>=1;i--)
+    {
+        printf(" %s ",$i);
+    }
+	print("\n")
+}
+
+
+************************************************************
+#PRACT 2
+#1]Shell script to display content of all regylar files of current directory
+
+fnames=`ls -al | grep '^-' | tr -s " " | cut -d " " -f 9`
+flen=${#fnames}
+i=1
+
+echo "`cat $fnames `\n"
+
+#2]
+# list fone names of digits only
+> ls | egrep "^[0-9]+$" 
+
+# Display lines from files having string "computer" at least 3 times
+>  sed -n "s/computer/computer/3 p" f1
+
+# Remove all alphabets form file
+>cat f1 | tr -d "a-zA-Z"
+
+# display all lines that are 10 chr long and ends with $
+>awk '/^.*[$]$/ && length($0)==10' f1 
+> sed -n '/\(^[0-9]\{9\}[$]$\)/p' f1
+
+# Display all lines with 5 words 
+>awk 'NF==5' f1
+
+
+************************************************************
+#PRACT3
+# 3]
+# Display lines of file that contaons special char in it
+> egrep  "^[^a-zA-Z0-9]+$" f1
+> egrep -v "[a-zA-Z0-9]" f1
+
+# Replace Good morning wiht good evening all
+>sed 's/Good morning/Good evening/g' f1
+> sed 's/\(Good \) morning/\1 evening/g' f1
+
+# Display name of all file/sub dir of current dire with permisson and file type
+> ls -ltr | tr -s " " | cut -d " " -f1,9
+
+# Display all blank lines with nos of file
+>egrep -n '^$' f1
+>awk 'length($0)==0 { print NR }' f1
+
+# Display all lines with even no of fiels
+>awk '{ for(i=2;i<=NF;i+=2){printf "%s ",$i}print "" }' f1^C
+
+
+************************************************************
+
+# PRACT 4
+# 1]Shell script to count total words and lines of given file (no wc command)
+>BEGIN{
+char=0;
+wcnt=0;
+}
+
+{
+	char=char+length($0)
+	wcnt=wcnt+NF
+}
+
+END{
+	printf("Total chars in file are : %d \n",char);
+	printf("Total words in file are : %d \n",wcnt);
+	printf("Total lines in file are : %d \n",FNR);
+}
+echo " "
+
+# 2]
+# print line no as well as name of emp whose sal > 20000
+> awk '$4>=20000 {print $2,$4}' emp
+
+# display lines starts with A and ends with $
+>egrep "^[A]+.+[$]$" f1
+
+# display 1st word of 10th to 20th line of file
+>awk 'NR==10,NR==20 {print $1}' f1
+
+# display all lines that occur more than once in file
+>sort f1 | uniq -d
+
+
+************************************************************
+# 506-Pract 1
+# 1] Script to reverse the string . passed as an argument
+s=$(echo $1 | rev)
+echo $s
+
+# 2]Using awk find some of n cols of array of nos given in tab form. It should also display grand totals (n to be taken command line args)
+# 1  2   3
+# 4  4   4
+# 5  5   5
+
+
+
+
+************************************************************
+
+************************************************************
+# 506-Pract 2
+# 1]Vowel counting script
+echo -n "Enter string : "
+read str
+
+#len=${$str}
+len=`expr length $str`
+
+vc=0
+count=0
+i=1
+while [ $i -le $len ]
+do
+	k=`echo $str | cut -c $i`
+	case $k in
+	[aeiouAEIOU])
+		count=`expr $count + 1`
+		;;
+	esac
+	i=`expr $i + 1`
+done
+echo "Total vowels : $count"
+
+# 2]stu.dat file which contaons rollno,marks of 5 test. awk script to calc total and avg marks for each student
+>awk '{print $0, $3+$4+$5+$6+$7 , $3+$4+$5+$6+$7/5}' student.dat 
+
+
+************************************************************
+# 506 -Pract 3
+# 1]Menu driven script to convert file into Upper or lower case 
+echo "Enter your choice : Press "
+	echo "1.UPPERCASE \n2.lowercase \n3.EXIT"
+	read ch
+	echo -n "Enter file name : "
+	read file
+
+	case $ch in 
+		1) cat $file | tr 'a-z' 'A-Z'
+			;;
+		2) cat $file |tr 'A-Z' 'a-z'
+			;;
+		3) exit
+			;;
+		*)echo "Enter valid choice..."
+			;;
+	esac
+
+# 2]AWK 
+#count occurence of bca in f1 
+>BEGIN{c=0}
+{
+	for(i=1;i<=NF;i++)
+	{
+	if($i=="computer" || $i=="Computer")
+		{
+		c++
+		}
+	}
+}
+END{	printf( "Total occurence : %d \n",c)}
+
+# print words with length > 4 char and digits only
+> awk 'length($0)==4 && /[0-9]/' f1
+
+# print even no of words in each line
+>awk '{for(i=2;i<=NF;i+=2){printf" %s",$i} print""}' emp
+
+
+************************************************************
+# 506 -Pract 201
+# 1]Shell script to check pwd = home dir
+l=`pwd`
+h=`echo $HOME`
+
+if [ $l = $h ]
+then	echo "Same"
+else 	echo "Not Same"
+fi
+
+# 2]Palindrome or not (string)
+
+
+
+
+************************************************************
+# 506 -Pract 202
+# 1]Shell script to display cal for curret month with date replaced by * or ** depending on whether date has one digit or two digits
+
+# 2]Palindrome or not (number)
+
+
+************************************************************
+# 506 -Pract 203
+# 1]GREP
+#Display lines with 5 letter (T...e) 
+>egrep "^T...e$" f1
+
+# Display lines with nos only
+>egrep "^[0-9]+$" f1
+
+# display lines starts with "a..."
+>egrep "^a+.+$" f1
+
+# 2]AWK
+# print sq of 1-5
+>awk 'BEGIN{for(i=1;i<=5;i++) print i*i}' 
+
+# print 1-10 nos
+>awk '{for(i=1;i<=10;i++) print i}' f1
+
+# Collect each line in separt arry elemtn ,index it by line no and print them in reverse
+>{
+    printf("%2d\t",NR);
+    for(i=NF;i>=1;i--)
+    {
+        printf("%-10s ",$i)
+    }
+	print ""
+}
